@@ -4,21 +4,16 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(express.json());
+app.set('view engine', 'ejs');
 
 
 app.get('/', (req, res) => {
-    res.send('Hello!');
+    res.render('index');
 })
 
-
-// app.set('view engine', 'ejs');
-
-
-// app.get('/', (req, res) => {
-//     res.render('index');
-// })
-
+app.get('/login', (req, res) => {
+    res.render('login');
+})
 
 
 
