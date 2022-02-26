@@ -37,7 +37,7 @@ app.post("/login", (req, res) => {
     });
     const payload = ticket.getPayload();
     // const userid = payload['sub'];
-    console.log(payload);
+    // console.log(payload);
   }
   verify()
   .then(() => {
@@ -52,6 +52,42 @@ app.get('/profile', (req, res) => {
     res.render('profile', { user });
 })
 
+app.get('/protectedroute', (req, res) => {
+    res.render('protectedroute');
+})
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('session-token');
+    res.redirect('/login');
+})
+
+
+function checkAuthenticated(req, res, next) {
+    let token = req.cookies('session-token');
+
+    let user = {};
+    async function verify() {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        user.name = payload.name;
+        user.email = payload.email;
+        user.picture = payload.picture;
+    }
+    verify()
+    .then(() => {
+        req.user = user;
+        next();
+    })
+    .catch(err => {
+        res.redirect('/login')
+    })
+
+}
+
+ 
 
 
 app.listen(PORT, () => {
