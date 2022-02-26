@@ -47,12 +47,12 @@ app.post("/login", (req, res) => {
   .catch(console.error);
 });
 
-app.get('/profile', (req, res) => {
+app.get('/dashboard', checkAuthenticated, (req, res) => {
     let user = req.user;
-    res.render('profile', { user });
+    res.render('dashboard', { user });
 })
 
-app.get('/protectedroute', (req, res) => {
+app.get('/protectedroute', checkAuthenticated, (req, res) => {
     res.render('protectedroute');
 })
 
@@ -63,7 +63,7 @@ app.get('/logout', (req, res) => {
 
 
 function checkAuthenticated(req, res, next) {
-    let token = req.cookies('session-token');
+    let token = req.cookies['session-token'];
 
     let user = {};
     async function verify() {
